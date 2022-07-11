@@ -17,10 +17,10 @@ func main() {
 
 func byteClient() {
 	log.Info("---- server start ----")
-	err := net_link.DialSync("127.0.0.1:0", "127.0.0.1:10086", codec.Byte(), net_link.HandlerFunc(
+	err := net_link.SyncDial("127.0.0.1:0", "127.0.0.1:10086", codec.Byte(), net_link.HandlerFunc(
 		func(s *net_link.Session) error {
 			msg := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
-			if err := s.WriteSync(msg); err != nil {
+			if err := s.SyncWrite(msg); err != nil {
 				return errors.Trace(err)
 			}
 			newMsg := make([]byte, 3)
@@ -46,9 +46,9 @@ func jsonClient() {
 	}
 
 	log.Info("---- client start ----")
-	err := net_link.DialSync("127.0.0.1:0", "127.0.0.1:10086", codec.Json(), net_link.HandlerFunc(
+	err := net_link.SyncDial("127.0.0.1:0", "127.0.0.1:10086", codec.Json(), net_link.HandlerFunc(
 		func(s *net_link.Session) error {
-			if err := s.Write(msg); err != nil {
+			if err := s.AsyncWrite(msg); err != nil {
 				return errors.Trace(err)
 			}
 			receiver := new(demo.Student)

@@ -28,27 +28,27 @@ func ListenAndAccept(addr string, protocol codec.Protocol, handler Handler) erro
 			continue
 		}
 		go func() {
-			if err := ServeConnSync(conn, protocol, handler); err != nil {
+			if err := SyncServeConn(conn, protocol, handler); err != nil {
 				log.Error(errors.ErrorStack(err))
 			}
 		}()
 	}
 }
 
-func Dial(laddr, raddr string, protocol codec.Protocol, handler Handler) error {
+func AsyncDial(laddr, raddr string, protocol codec.Protocol, handler Handler) error {
 	return newLink().dial(laddr, raddr, protocol, handler).err
 }
 
-func DialSync(laddr, raddr string, protocol codec.Protocol, handler Handler) error {
+func SyncDial(laddr, raddr string, protocol codec.Protocol, handler Handler) error {
 	lnk := <-newLink().dial(laddr, raddr, protocol, handler).done
 	return lnk.err
 }
 
-func ServeConn(conn net.Conn, protocol codec.Protocol, handler Handler) error {
+func AsyncServeConn(conn net.Conn, protocol codec.Protocol, handler Handler) error {
 	return newLink().serveConn(conn, protocol, handler).err
 }
 
-func ServeConnSync(conn net.Conn, protocol codec.Protocol, handler Handler) error {
+func SyncServeConn(conn net.Conn, protocol codec.Protocol, handler Handler) error {
 	lnk := <-newLink().serveConn(conn, protocol, handler).done
 	return lnk.err
 }

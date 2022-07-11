@@ -84,7 +84,7 @@ func (s *Session) Read(msg interface{}) (err error) {
 }
 
 // thread safety
-func (s *Session) Write(msg interface{}) error {
+func (s *Session) AsyncWrite(msg interface{}) error {
 	if s.writeChan == nil {
 		if s.IsClosed() {
 			return sessionClosedError
@@ -112,7 +112,7 @@ func (s *Session) Write(msg interface{}) error {
 	}
 }
 
-func (s *Session) WriteSync(msg interface{}) error {
+func (s *Session) SyncWrite(msg interface{}) error {
 	s.writeMutex.RLock()
 	defer s.writeMutex.RUnlock()
 

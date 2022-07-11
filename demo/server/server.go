@@ -57,7 +57,7 @@ func jsonServer() {
 			if !reflect.DeepEqual(receiver, msg) {
 				panic("read err")
 			}
-			if err := s.Write(receiver); err != nil {
+			if err := s.AsyncWrite(receiver); err != nil {
 				return errors.Trace(err)
 			}
 			log.Info("--- ok ---")

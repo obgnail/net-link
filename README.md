@@ -17,7 +17,7 @@ func main() {
 				panic("read err")
 			}
       
-			if err := s.Write(receiver); err != nil {
+			if err := s.SyncWrite(receiver); err != nil {
 				return errors.Trace(err)
 			}
 			return nil
@@ -39,16 +39,16 @@ type Handler interface {
 ListenAndAccept(addr string, protocol Protocol, handler Handler) error
 
 // 异步Dial
-Dial(laddr, raddr string, protocol Protocol, handler Handler) error
+AsyncDial(laddr, raddr string, protocol Protocol, handler Handler) error
 
 // 同步Dial
-DialSync(laddr, raddr string, protocol Protocol, handler Handler) error
+SyncDial(laddr, raddr string, protocol Protocol, handler Handler) error
 
 // 异步处理Conn
-ServeConn(conn net.Conn, protocol Protocol, handler Handler) error
+AsyncServeConn(conn net.Conn, protocol Protocol, handler Handler) error
 
 // 同步处理Conn
-ServeConnSync(conn net.Conn, protocol Protocol, handler Handler) error
+SyncServeConn(conn net.Conn, protocol Protocol, handler Handler) error
 ```
 
 
@@ -71,10 +71,10 @@ func (s *Session) HiJack() io.ReadWriter
 func (s *Session) Read(msg interface{}) error
 
 // 异步写入
-func (s *Session) Write(msg interface{}) error
+func (s *Session) AsyncWrite(msg interface{}) error
 
 // 同步写入
-func (s *Session) WriteSync(msg interface{}) error
+func (s *Session) SyncWrite(msg interface{}) error
 
 // 会话ID
 func (s *Session) ID() uint64
@@ -234,7 +234,7 @@ func main() {
 		func(s *net_link.Session) error {
       
 			msg := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
-			if err := s.WriteSync(msg); err != nil {
+			if err := s.SyncWrite(msg); err != nil {
 				return errors.Trace(err)
 			}
       
